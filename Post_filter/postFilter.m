@@ -2,7 +2,7 @@ clear;
 close all;
 %% read input audio from path
 %clean_sig = audioread('audio_transmit_male.wav');
-file_name = "sample_edabk";
+file_name = "sample_edabk2";
 [sig, fs] = audioread(strcat(file_name,'.wav'));
 t = length(sig)/fs; % signal length
 fprintf('Signal duration= %f secs\n',t);
@@ -50,8 +50,8 @@ g_long = ones(n_frames, 1); % gain rescale factor of long-term filterter
 temp1 = ones(lpc_ord+1, 1);
 temp2 = ones(lpc_ord+1, 1);
 for ii = 1:lpc_ord
-    temp1(ii+1) = beta^(ii+1);
-    temp2(ii+1) = alpha^(ii+1);
+    temp1(ii+1) = beta^(ii);
+    temp2(ii+1) = alpha^(ii);
 end
 %% Apply filters
 for ii=1:n_frames
@@ -153,8 +153,8 @@ for ii=1:n_frames
     g2 = zeros(frame_length, 1);    % gain estimator of filtered signal
     g = ones(frame_length, 1);
     for ii1 = 2:frame_length
-        g1(ii1) = delta * g1(ii1-1) + (1-delta)*abs(w_frame(ii1));
-        g2(ii1) = delta * g2(ii1-1) + (1-delta)*abs(temp4(ii1));
+        g1(ii1) = sqrt(delta * g1(ii1-1)^2 + (1-delta)*w_frame(ii1)^2);
+        g2(ii1) = sqrt(delta * g2(ii1-1)^2 + (1-delta)*temp4(ii1)^2);
         
         if(g2(ii1)==0)
             g(ii1) = 1;
