@@ -1,12 +1,13 @@
+% data path
+clc;
 clear;
 close all;
+
 %% read input audio from path
 %clean_sig = audioread('audio_transmit_male.wav');
-file_name = "sample_edabk2";
-[sig, fs] = audioread(strcat(file_name,'.wav'));
-t = length(sig)/fs; % signal length
-fprintf('Signal duration= %f secs\n',t);
-fprintf('Sampling frequency= %d Hz\n',fs);
+data_path = '~/sound_file/';
+listFile = dir(data_path);
+
 %% Parameters
 
 % Long-term:
@@ -18,12 +19,22 @@ alpha = 0.9;
 beta = 0.5;
 mu = 0.5;
 % Gain estimate params
-delta = 0.99;
+delta = 0.90;
 % LPC order - Frame parameter
 lpc_ord = 10;
 frame = 0.02; % ms second
 overlap = 0.5; % overlap 50%
 
+for trav = 3:3%length(listFile)
+
+file_name = listFile(trav).name;
+temp_pref = strsplit(file_name,'.');
+pref = temp_pref{1};
+[sig, fs] = audioread(strcat(data_path,file_name));
+t = length(sig)/fs; % signal length
+fprintf('Signal duration= %f secs\n',t);
+fprintf('Sampling frequency= %d Hz\n',fs);    
+    
 frame_length = floor(frame * fs); % frame in samples
 overlap_by_samples = floor(frame_length * overlap);
 fprintf('Frame width: %f (ms) = %d samples - Overlap: %.2f %c\n',...
@@ -173,8 +184,8 @@ end
 %% Write to wav file
 % audiowrite(strcat(file_name,'_long.wav'), long_out, fs);
 % audiowrite(strcat(file_name, '_short.wav'), short_out, fs);
-audiowrite(strcat(file_name, '_scaled.wav'), scaled_out, fs);
-
+audiowrite(strcat('~/filtered_sound_file/',pref, '_scaled.wav'), scaled_out, fs);
+end
 % %%
 % figure(1);
 % spectrogram(sig,hann(frame_length),overlap_by_samples,1024,'yaxis');
